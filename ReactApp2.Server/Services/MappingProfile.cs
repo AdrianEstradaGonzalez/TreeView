@@ -6,7 +6,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Node, NodeDto>(); // Mapeo de Node a NodeDto
-        CreateMap<NodeDto, Node>(); // Mapeo inverso de NodeDto a Node
+        CreateMap<Node, NodeDto>().ReverseMap(); // Mapeo de Node a NodeDto
     }
 }
