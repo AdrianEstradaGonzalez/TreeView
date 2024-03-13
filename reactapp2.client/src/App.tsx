@@ -67,7 +67,7 @@ export default function CustomizedTreeView() {
 
     useEffect(() => {
         fetchTreeNodes('get');
-    }, []);
+    });
 
     // Fetch tree nodes from the API
     /*
@@ -151,7 +151,7 @@ export default function CustomizedTreeView() {
     * @param _event: React.ChangeEvent<{}> - Event object representing the node selection event
     * @param nodeIds: string | string[] - ID or array of IDs of the selected node(s)
     */
-    const handleNodeSelect = (_event: React.ChangeEvent<{}>, nodeIds: string | string[]) => {
+    const handleNodeSelect = (_event: React.ChangeEvent<unknown>, nodeIds: string | string[]) => {
         // Extract the selected node ID
         const nodeId = Array.isArray(nodeIds) ? nodeIds[0] : nodeIds;
         // Update the selected node ID state
