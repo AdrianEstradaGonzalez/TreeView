@@ -1,0 +1,125 @@
+/*
+* Component: DeleteNodeComponent
+* Description: This component is responsible for deleting a node from the tree.
+* Props:
+*   - nodeId: The ID of the node to be deleted.
+*   - name: The name of the node to be deleted.
+*   - update: A function to update the tree after deleting the node.
+*   - hasChildren: Indicates whether the node has children or not.
+*/
+
+import { useState } from 'react';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DeleteIcon from '@material-ui/icons/Delete';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import { environment } from '../environments/enviroment';
+import '../css/DeleteNodeComponent.css';
+import axios from 'axios';
+import { makeStyles } from '@material-ui/core/styles';
+
+// Define custom styles using makeStyles hook
+const useStyles = makeStyles((theme) => ({
+    deleteButton: {
+        margin: theme.spacing(1),
+        [theme.breakpoints.down('xs')]: {
+            fontSize: '0.75rem', // Smaller font size on mobile devices
+            padding: theme.spacing(0.5, 1), // Smaller padding on mobile devices
+        },
+    },
+    deleteDialog: {
+        [theme.breakpoints.down('xs')]: {
+            minWidth: '90%', // Minimum width of the dialog on mobile devices
+        },
+    },
+    deleteDialogTitle: {
+        [theme.breakpoints.down('xs')]: {
+            fontSize: '1rem', // Smaller font size on mobile devices
+        },
+    },
+    deleteDialogContent: {
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing(1), // Smaller padding on mobile devices
+        },
+    },
+    deleteDialogActions: {
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing(1), // Smaller padding on mobile devices
+        },
+    },
+}));
+
+interface DeleteNodeProps {
+    nodeId: number;
+    name: string | undefined;
+    hasChildren: boolean | undefined;
+    update: (operationType: string) => void;
+}
+
+export default function DeleteNodeComponent({ nodeId, name, hasChildren, update }: DeleteNodeProps) {
+    const classes = useStyles();
+    // State variable for dialog open state
+    const [open, setOpen] = useState(false);
+
+    // Function to handle delete button click
+    const handleDeleteButtonClick = () => {
+        if (!hasChildren && nodeId !== null && name !== "") {
+            setOpen(true);
+
+        }
+        else if (nodeId == null || name === "") {
+            alert("Please, select a node before deleting");
+        }
+        else {
+            alert("A node with children cannot be deleted");
+        }
+    };
+
+    // Function to handle cancel button click
+    const handleCancelButtonClick = () => {
+        setOpen(false);
+    };
+
+    // Function to handle delete confirmation button click
+    const handleDeleteConfirmClick = () => {
+        axios.delete(`${environment.API_URL}/TreeNodes/${nodeId}`)
+            .then((result) => {
+                if (result.status === 200) {
+                    update('delete'); 
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        setOpen(false);
+    };
+
+    return (
+        <>
+            <Button
+                onClick={handleDeleteButtonClick}
+                className={classes.deleteButton}
+                variant="contained"
+                color="secondary"
+                startIcon={<DeleteIcon />}
+            >
+            </Button>
+            <Dialog open={open} onClose={handleCancelButtonClick} className={classes.deleteDialog}>
+                <DialogTitle className={classes.deleteDialogTitle}>Delete Node</DialogTitle>
+                <DialogContent className={classes.deleteDialogContent}>
+                    <p>Are you sure you want to delete Node: "{name}"?</p>
+                </DialogContent>
+                <DialogActions className={classes.deleteDialogActions}>
+                    <Button onClick={handleCancelButtonClick} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleDeleteConfirmClick} color="secondary">
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
+}

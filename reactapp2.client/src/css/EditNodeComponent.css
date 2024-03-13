@@ -1,0 +1,17 @@
+.editDialog {
+    width: 30%;
+    margin: 0 auto;
+}
+  
+.editDialogTitle {
+    background-color: #1976d2;
+    color: #fff;
+}
+  
+.editDialogContent {
+    padding: 20px;
+}
+  
+.editDialogActions {
+    padding: 10px 20px 20px;
+}

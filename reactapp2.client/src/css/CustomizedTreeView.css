@@ -1,0 +1,47 @@
+/* CustomizedTreeView.css */
+
+.customizedTreeView {
+    width: 100%;
+    height: 100%;
+}
+
+.MuiTreeView-root {
+    width: 100%;
+    height: 100%;
+    font-family: 'Roboto', sans-serif; /* Cambiar la fuente del árbol */
+    font-size: 16px; /* Ajustar el tamaño de fuente */
+}
+
+.MuiTreeItem-root {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px; /* Hacer los bordes más redondeados */
+    background-color: #f0f0f0; /* Cambiar el color de fondo */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Agregar sombra */
+}
+
+.MuiTreeItem-label {
+    font-size: 18px;
+    color: #333333;
+}
+
+.actionButton {
+    margin-right: 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.actionButton:hover {
+    background-color: #0056b3;
+}
+
+.actionButton:disabled {
+    background-color: #cccccc;
+    color: #999999;
+    cursor: not-allowed;
+}

@@ -1,0 +1,18 @@
+.addDialog {
+    width: 30%;
+    margin: 0 auto;
+  }
+  
+  .addDialogTitle {
+    background-color: #1976d2;
+    color: #fff;
+  }
+  
+  .addDialogContent {
+    padding: 20px;
+  }
+  
+  .addDialogActions {
+    padding: 10px 20px 20px;
+  }
+

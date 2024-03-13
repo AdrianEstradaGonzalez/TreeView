@@ -1,0 +1,21 @@
+.deleteDialog {
+    width: 400px;
+    margin: 0 auto;
+  }
+  
+  .deleteDialogTitle {
+    background-color: #dc004e;
+    color: #fff;
+  }
+  
+  .deleteDialogContent {
+    padding: 20px;
+  }
+  
+  .deleteDialogActions {
+    padding: 10px 20px 20px;
+  }
+
+  .deleteButton {
+    margin:10%;
+  }
