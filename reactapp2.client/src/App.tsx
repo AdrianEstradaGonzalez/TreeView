@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
         minWidth: 150, // Minimum width for the box on mobile devices
-        width: '80%', // Default width for the box on mobile devices
+        width: '81%', // Default width for the box on mobile devices
         margin: '0 auto', // Center the box horizontally
         [theme.breakpoints.up('sm')]: {
             width: 'auto', // Default width for the box on devices larger than 600px
