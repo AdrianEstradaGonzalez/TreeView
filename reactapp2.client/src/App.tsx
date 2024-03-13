@@ -1,7 +1,6 @@
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import AddNodeComponent from './components/AddNodeComponent';
-import { makeStyles } from '@material-ui/core/styles';
 import DeleteNodeComponent from './components/DeleteNodeComponent';
 import EditNodeComponent from './components/EditNodeComponent';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,51 +11,13 @@ import { environment } from './environments/enviroment';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CustomSvgIcons } from './icons/CustomSvgIcons';
-
-const useStyles = makeStyles((theme) => ({
-    container: {
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(3),
-        borderRadius: theme.shape.borderRadius,
-        boxShadow: theme.shadows[3],
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minWidth: 150, // Minimum width for the box on mobile devices
-        width: '80%', // Default width for the box on mobile devices
-        margin: '0 auto', // Center the box horizontally
-        [theme.breakpoints.up('sm')]: {
-            width: 'auto', // Default width for the box on devices larger than 600px
-        },
-    },
-    header: {
-        marginBottom: theme.spacing(2),
-    },
-    buttonsContainer: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        width: '100%',
-        marginBottom: theme.spacing(2),
-    },
-    treeViewContainer: {
-        width: '100%',
-        maxWidth: 400,
-        margin: '0 auto', // Center the TreeView horizontally
-    },
-}));
-
-// Define the Node interface that represents the Data Transfer Object
-interface NodeDto {
-    id: number;
-    name: string;
-    parentId: number;
-    childs?: NodeDto[];
-}
+import { CustomSvgIcons } from './styles/CustomSvgIcons';
+import { useCustomizedTreeViewStyles } from './styles/Styles';
+import { NodeDto } from './interfaces/NodeDto';
 
 // Main component
 export default function CustomizedTreeView() {
-    const classes = useStyles();
+    const classes = useCustomizedTreeViewStyles();
     // States
     const [selectedNodeID, setSelectedNode] = useState<number>(0);
     const [selectedName, setSelectedName] = useState<string>();
@@ -67,6 +28,7 @@ export default function CustomizedTreeView() {
 
     useEffect(() => {
         fetchTreeNodes('get');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
     // Fetch tree nodes from the API
@@ -257,3 +219,4 @@ export default function CustomizedTreeView() {
         </div>
     );
 }
+
