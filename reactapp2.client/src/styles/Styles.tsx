@@ -31,4 +31,7 @@ export const useCustomizedTreeViewStyles = makeStyles((theme) => ({
         maxWidth: 400,
         margin: '0 auto', // Center the TreeView horizontally
     },
+    expandButton: {
+        margin: 0
+    },
 }));

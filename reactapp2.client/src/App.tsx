@@ -14,6 +14,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { CustomSvgIcons } from './styles/CustomSvgIcons';
 import { useCustomizedTreeViewStyles } from './styles/Styles';
 import { NodeDto } from './interfaces/NodeDto';
+import { IconButton } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 // Main component
 export default function CustomizedTreeView() {
@@ -25,6 +28,7 @@ export default function CustomizedTreeView() {
     const [parentName, setParentName] = useState<string>();
     const [parentId, setParentId] = useState<number>();
     const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+    const [expandedNodes, setExpandedNodes] = useState<string[]>([]);
 
     useEffect(() => {
         fetchTreeNodes('get');
@@ -119,6 +123,14 @@ export default function CustomizedTreeView() {
         // Update the selected node ID state
         setSelectedNode(parseInt(nodeId));
 
+        setExpandedNodes(prevExpanded => {
+            if (prevExpanded.includes(nodeId)) {
+                return prevExpanded.filter(id => id !== nodeId); 
+            } else {
+                return [...prevExpanded, nodeId]; 
+            }
+        });
+
         // Find the selected node in the treeNodes array
         const selectedNode = findNodeById(treeNodes, parseInt(nodeId));
         if (selectedNode !== undefined) {
@@ -161,7 +173,11 @@ export default function CustomizedTreeView() {
         console.info("Renderizado");
         try {
             return nodes.map(node => (
-                <TreeItem key={node.id} nodeId={node.id.toString()} label={node.name} onDoubleClick={(event) => handleNodeDoubleClick(node, event)}>
+                <TreeItem 
+                key={node.id} 
+                nodeId={node.id.toString()} 
+                label={node.name} 
+                onDoubleClick={(event) => handleNodeDoubleClick(node, event)}>
                     {node.childs && node.childs.length > 0 && renderTreeNodes(node.childs)}
                 </TreeItem>
             ))                     
@@ -179,6 +195,33 @@ export default function CustomizedTreeView() {
         await fetchTreeNodes(operationType);
     };
 
+    // Handle expand/collapse all nodes
+    const handleExpandToggle = () => {
+        if (expandedNodes.length > 0) {
+            // Si hay nodos expandidos, colapsar todos los nodos
+            setExpandedNodes([]);
+        } else {
+            // Si no hay nodos expandidos, expandir todos los nodos
+            const allNodeIds = getAllNodeIds(treeNodes);
+            setExpandedNodes(allNodeIds);
+        }
+    };
+
+    // Método para obtener todos los IDs de los nodos en el árbol
+    const getAllNodeIds = (nodes: NodeDto[]): string[] => {
+        const allNodeIds: string[] = [];
+        const traverse = (node: NodeDto) => {
+            allNodeIds.push(node.id.toString());
+            if (node.childs && node.childs.length > 0) {
+                node.childs.forEach(child => traverse(child));
+            }
+        };
+        nodes.forEach(node => traverse(node));
+        return allNodeIds;
+    };
+    
+
+
     const selectedNode = findNodeById(treeNodes, selectedNodeID);
     const selectedNodeHasChildren = selectedNode && selectedNode.childs && selectedNode.childs.length > 0;
 
@@ -192,6 +235,19 @@ export default function CustomizedTreeView() {
                 <ToastContainer />
                 <h1 className={classes.header}>Node Tree View</h1>
                 <div className={classes.buttonsContainer}>
+                    <IconButton onClick={handleExpandToggle} className={classes.expandButton}>
+                        {expandedNodes.length>0 ? (
+                            <>
+                                <ExpandLessIcon />
+                                Collapse All
+                            </>
+                        ) : (
+                            <>
+                                <ExpandMoreIcon />
+                                Expand All
+                            </>
+                        )}
+                    </IconButton>
                     <AddNodeComponent parentId={selectedNodeID} name={selectedName} update={(operationType) => handleUpdate(operationType)} />
                     <DeleteNodeComponent nodeId={selectedNodeID} name={selectedName} hasChildren={selectedNodeHasChildren} update={(operationType) => handleUpdate(operationType)} />
                     <EditNodeComponent
@@ -206,10 +262,10 @@ export default function CustomizedTreeView() {
                 </div>
                 <div className={classes.treeViewContainer}>
                     <TreeView
-                        defaultExpanded={['1']}
                         defaultCollapseIcon={<MinusSquareIcon />}
                         defaultExpandIcon={<PlusSquareIcon />}
                         defaultEndIcon={<CloseSquareIcon />}
+                        expanded={expandedNodes}
                         onNodeSelect={handleNodeSelect}
                     >
                         {renderTreeNodes(treeNodes)}
