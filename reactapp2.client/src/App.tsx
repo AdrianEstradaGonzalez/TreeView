@@ -17,6 +17,7 @@ import { NodeDto } from './interfaces/NodeDto';
 import { IconButton } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { Grid } from '@material-ui/core';
 
 // Main component
 export default function CustomizedTreeView() {
@@ -235,30 +236,40 @@ export default function CustomizedTreeView() {
                 <ToastContainer />
                 <h1 className={classes.header}>Node Tree View</h1>
                 <div className={classes.buttonsContainer}>
-                    <IconButton onClick={handleExpandToggle} className={classes.expandButton}>
-                        {expandedNodes.length>0 ? (
-                            <>
-                                <ExpandLessIcon />
-                                Collapse All
-                            </>
-                        ) : (
-                            <>
-                                <ExpandMoreIcon />
-                                Expand All
-                            </>
-                        )}
-                    </IconButton>
-                    <AddNodeComponent parentId={selectedNodeID} name={selectedName} update={(operationType) => handleUpdate(operationType)} />
-                    <DeleteNodeComponent nodeId={selectedNodeID} name={selectedName} hasChildren={selectedNodeHasChildren} update={(operationType) => handleUpdate(operationType)} />
-                    <EditNodeComponent
-                        open={openEditDialog}
-                        setOpen={setOpenEditDialog}
-                        nodeId={selectedNodeID}
-                        parentName={parentName}
-                        currentName={selectedName}
-                        parentID={parentId}
-                        update={(operationType) => handleUpdate(operationType)}
-                    />
+                    <Grid container justify="flex-end" alignItems="center">
+                        <Grid item>
+                            <IconButton onClick={handleExpandToggle} className={classes.expandButton}>
+                                {expandedNodes.length > 0 ? (
+                                    <>
+                                        <ExpandLessIcon />
+                                        Collapse 
+                                    </>
+                                ) : (
+                                    <>
+                                        <ExpandMoreIcon />
+                                        Expand
+                                    </>
+                                )}
+                            </IconButton>
+                        </Grid>
+                        <Grid item>
+                            <AddNodeComponent parentId={selectedNodeID} name={selectedName} update={(operationType) => handleUpdate(operationType)} />
+                        </Grid>
+                        <Grid item>
+                            <DeleteNodeComponent nodeId={selectedNodeID} name={selectedName} hasChildren={selectedNodeHasChildren} update={(operationType) => handleUpdate(operationType)} />
+                        </Grid>
+                        <Grid item>
+                            <EditNodeComponent
+                                open={openEditDialog}
+                                setOpen={setOpenEditDialog}
+                                nodeId={selectedNodeID}
+                                parentName={parentName}
+                                currentName={selectedName}
+                                parentID={parentId}
+                                update={(operationType) => handleUpdate(operationType)}
+                            />
+                        </Grid>
+                    </Grid>
                 </div>
                 <div className={classes.treeViewContainer}>
                     <TreeView
