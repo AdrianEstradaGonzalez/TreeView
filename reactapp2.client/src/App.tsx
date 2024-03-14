@@ -279,19 +279,13 @@ export default function CustomizedTreeView() {
                     </Grid>
                     <Grid container spacing={0} justify="space-between" alignItems="center">
                         <Grid item>
-                        <IconButton onClick={handleExpandToggle} className={classes.expandButton}>
-                            {expandedNodes.length > 0 ? (
-                                <>
+                            <IconButton onClick={handleExpandToggle} className={classes.expandButton}>
+                                {expandedNodes.length > 0 ? (
                                     <ExpandLessIcon />
-                                    Collapse All
-                                </>
-                            ) : (
-                                <>
+                                ) : (
                                     <ExpandMoreIcon />
-                                    Expand All
-                                </>
-                            )}
-                        </IconButton>
+                                )}
+                            </IconButton>
                         </Grid>
                         <Grid item>
                             <Grid container spacing={0} justify="flex-end">
