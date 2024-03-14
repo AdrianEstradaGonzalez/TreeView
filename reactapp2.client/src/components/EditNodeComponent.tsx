@@ -21,15 +21,7 @@ import TextField from '@material-ui/core/TextField';
 import { environment } from '../environments/enviroment';
 import '../css/EditNodeComponent.css'; // Import custom CSS for the component
 import axios from 'axios';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles((theme) => ({
-    editDialog: {
-        [theme.breakpoints.down('xs')]: {
-            minWidth: '90%', // Minimum width of the dialog on mobile devices
-        },
-    },
-}));
+import useStyles from '../styles/EditStyles';
 
 interface EditNodeProps {
     open: boolean; // Prop to control the open state of the dialog

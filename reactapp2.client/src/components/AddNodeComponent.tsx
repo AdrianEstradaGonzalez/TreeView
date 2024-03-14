@@ -8,7 +8,8 @@
 */
 
 import { useState } from 'react';
-import Button from '@material-ui/core/Button';
+import { IconButton } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,38 +18,10 @@ import TextField from '@material-ui/core/TextField';
 import { environment } from '../environments/enviroment';
 import '../css/AddNodeComponent.css';
 import axios from 'axios';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button } from 'react-bootstrap';
+import useStyles from '../styles/AddStyles';
+import useComponentStyles from '../styles/ComponentStyles';
 
-// Define custom styles using makeStyles hook
-const useStyles = makeStyles((theme) => ({
-    addButton: {
-        margin: theme.spacing(1),
-        [theme.breakpoints.down('xs')]: {
-            fontSize: '0.75rem', // Smaller font size on mobile devices
-            padding: theme.spacing(0.5, 1), // Smaller padding on mobile devices
-        },
-    },
-    addDialog: {
-        [theme.breakpoints.down('xs')]: {
-            minWidth: '90%', // Minimum width of the dialog on mobile devices
-        },
-    },
-    addDialogTitle: {
-        [theme.breakpoints.down('xs')]: {
-            fontSize: '1rem', // Smaller font size on mobile devices
-        },
-    },
-    addDialogContent: {
-        [theme.breakpoints.down('xs')]: {
-            padding: theme.spacing(1), // Smaller padding on mobile devices
-        },
-    },
-    addDialogActions: {
-        [theme.breakpoints.down('xs')]: {
-            padding: theme.spacing(1), // Smaller padding on mobile devices
-        },
-    },
-}));
 interface AddNodeProps {
     parentId: number; 
     name: string | undefined;
@@ -58,6 +31,8 @@ interface AddNodeProps {
 export default function AddNodeComponent({parentId, name, update }: AddNodeProps) {
     // State variables
     const classes = useStyles();
+    const components = useComponentStyles();
+
     const [open, setOpen] = useState(false); // Dialog open state
     const [nodeName, setNodeName] = useState(''); // New node name
 
@@ -96,12 +71,12 @@ export default function AddNodeComponent({parentId, name, update }: AddNodeProps
 
     return (
         <>
-            <Button onClick={handleAddButtonClick} className={classes.addButton} variant="contained" color="primary">
-                +
-            </Button>
-            <Dialog open={open} onClose={handleCancelButtonClick} className={classes.addDialog}>
-                <DialogTitle className={classes.addDialogTitle}>Add New Node</DialogTitle>
-                <DialogContent className={classes.addDialogContent}>
+            <IconButton onClick={handleAddButtonClick} className={classes.addButton} color="primary">
+                <AddIcon />
+            </IconButton>
+            <Dialog open={open} onClose={handleCancelButtonClick} className={components.dialog}>
+                <DialogTitle className={components.dialogTitle}>Add New Node</DialogTitle>
+                <DialogContent className={components.dialogContent}>
                     <p>Parent name: {name}</p>
                     <TextField
                         autoFocus
@@ -114,12 +89,12 @@ export default function AddNodeComponent({parentId, name, update }: AddNodeProps
                         onChange={(e) => setNodeName(e.target.value)}
                     />
                 </DialogContent>
-                <DialogActions className={classes.addDialogActions}>
+                <DialogActions className={components.dialogActions}>
                     <Button onClick={handleCancelButtonClick} color="primary">
-                        Cancel
+                            Cancel
                     </Button>
-                    <Button onClick={handleSaveButtonClick} color="primary">
-                        Save changes
+                    <Button onClick={handleSaveButtonClick} color="secondary">
+                        Add
                     </Button>
                 </DialogActions>
             </Dialog>

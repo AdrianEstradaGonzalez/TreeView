@@ -11,6 +11,7 @@
 import { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import { IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -18,38 +19,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { environment } from '../environments/enviroment';
 import '../css/DeleteNodeComponent.css';
 import axios from 'axios';
-import { makeStyles } from '@material-ui/core/styles';
-
-// Define custom styles using makeStyles hook
-const useStyles = makeStyles((theme) => ({
-    deleteButton: {
-        margin: theme.spacing(1),
-        [theme.breakpoints.down('xs')]: {
-            fontSize: '0.75rem', // Smaller font size on mobile devices
-            padding: theme.spacing(0.5, 1), // Smaller padding on mobile devices
-        },
-    },
-    deleteDialog: {
-        [theme.breakpoints.down('xs')]: {
-            minWidth: '90%', // Minimum width of the dialog on mobile devices
-        },
-    },
-    deleteDialogTitle: {
-        [theme.breakpoints.down('xs')]: {
-            fontSize: '1rem', // Smaller font size on mobile devices
-        },
-    },
-    deleteDialogContent: {
-        [theme.breakpoints.down('xs')]: {
-            padding: theme.spacing(1), // Smaller padding on mobile devices
-        },
-    },
-    deleteDialogActions: {
-        [theme.breakpoints.down('xs')]: {
-            padding: theme.spacing(1), // Smaller padding on mobile devices
-        },
-    },
-}));
+import useComponentStyles from '../styles/ComponentStyles';
+import useStyles from '../styles/DeleteStyles';
 
 interface DeleteNodeProps {
     nodeId: number;
@@ -60,6 +31,7 @@ interface DeleteNodeProps {
 
 export default function DeleteNodeComponent({ nodeId, name, hasChildren, update }: DeleteNodeProps) {
     const classes = useStyles();
+    const components = useComponentStyles();
     // State variable for dialog open state
     const [open, setOpen] = useState(false);
 
@@ -98,20 +70,15 @@ export default function DeleteNodeComponent({ nodeId, name, hasChildren, update 
 
     return (
         <>
-            <Button
-                onClick={handleDeleteButtonClick}
-                className={classes.deleteButton}
-                variant="contained"
-                color="secondary"
-                startIcon={<DeleteIcon />}
-            >
-            </Button>
-            <Dialog open={open} onClose={handleCancelButtonClick} className={classes.deleteDialog}>
-                <DialogTitle className={classes.deleteDialogTitle}>Delete Node</DialogTitle>
-                <DialogContent className={classes.deleteDialogContent}>
+            <IconButton onClick={handleDeleteButtonClick} className={classes.deleteButton} color="secondary">
+                <DeleteIcon />
+            </IconButton>
+            <Dialog open={open} onClose={handleCancelButtonClick} className={components.dialog}>
+                <DialogTitle className={components.dialogTitle}>Delete Node</DialogTitle>
+                <DialogContent className={components.dialogContent}>
                     <p>Are you sure you want to delete Node: "{name}"?</p>
                 </DialogContent>
-                <DialogActions className={classes.deleteDialogActions}>
+                <DialogActions className={components.dialogActions}>
                     <Button onClick={handleCancelButtonClick} color="primary">
                         Cancel
                     </Button>

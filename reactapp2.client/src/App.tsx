@@ -11,13 +11,15 @@ import { environment } from './environments/enviroment';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CustomSvgIcons } from './styles/CustomSvgIcons';
 import { useCustomizedTreeViewStyles } from './styles/Styles';
 import { NodeDto } from './interfaces/NodeDto';
 import { IconButton } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { Grid } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 // Main component
 export default function CustomizedTreeView() {
@@ -30,6 +32,7 @@ export default function CustomizedTreeView() {
     const [parentId, setParentId] = useState<number>();
     const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
     const [expandedNodes, setExpandedNodes] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         fetchTreeNodes('get');
@@ -166,26 +169,51 @@ export default function CustomizedTreeView() {
     
     // Render tree nodes recursively
     /*
-     * Render tree nodes recursively based on the given array of nodes.
-     * @param nodes: Node[] - Array of nodes to render
-     * @returns JSX.Element[] - Array of JSX elements representing the rendered tree nodes
-     */
+    * Render tree nodes recursively based on the given array of nodes.
+    * Filters the nodes based on the search query.
+    * @param nodes: Node[] - Array of nodes to render
+    * @returns JSX.Element[] - Array of JSX elements representing the rendered tree nodes
+    */
     const renderTreeNodes = (nodes: NodeDto[]) => {
-        console.info("Renderizado");
         try {
-            return nodes.map(node => (
-                <TreeItem 
-                key={node.id} 
-                nodeId={node.id.toString()} 
-                label={node.name} 
-                onDoubleClick={(event) => handleNodeDoubleClick(node, event)}>
-                    {node.childs && node.childs.length > 0 && renderTreeNodes(node.childs)}
-                </TreeItem>
-            ))                     
+            return nodes.map(node => {
+                // Check if the node matches the search query
+                const matchesSearch = searchQuery ? node.name.toLowerCase().startsWith(searchQuery.toLowerCase()) : true;
+                // Render the node and its children if it matches the search query
+                if (searchQuery) {
+                    return (
+                        <Fragment key={node.id}>
+                            {matchesSearch && (
+                                <TreeItem 
+                                    nodeId={node.id.toString()} 
+                                    label={node.name} 
+                                    onDoubleClick={(event) => handleNodeDoubleClick(node, event)}
+                                />
+                            )}
+                            {node.childs && renderTreeNodes(node.childs)}
+                        </Fragment>
+                    );
+                } else {
+                    return (
+                        <TreeItem 
+                            key={node.id} 
+                            nodeId={node.id.toString()} 
+                            label={node.name} 
+                            onDoubleClick={(event) => handleNodeDoubleClick(node, event)}
+                        >
+                            {node.childs && renderTreeNodes(node.childs)}
+                        </TreeItem>
+                    );
+                }
+            });
         } catch (error) {
             console.error('Error fetching tree nodes:', error);
+            return null;
         }
     };
+    
+    
+
 
     // Handle update
     /*
@@ -220,44 +248,62 @@ export default function CustomizedTreeView() {
         nodes.forEach(node => traverse(node));
         return allNodeIds;
     };
-    
 
+    /*
+    * Function to handle changes in the search input.
+    * @param event: { target: { value: string }} - Event object representing the change in the search input.
+    *              - event.target.value: string - The new value of the search input.
+    */
+    const handleSearchChange = (event: { target: { value: string }}) => {
+        setSearchQuery(event.target.value);
+    };
 
     const selectedNode = findNodeById(treeNodes, selectedNodeID);
     const selectedNodeHasChildren = selectedNode && selectedNode.childs && selectedNode.childs.length > 0;
-
-    const PlusSquareIcon = CustomSvgIcons.PlusSquare;
-    const MinusSquareIcon = CustomSvgIcons.MinusSquare;
-    const CloseSquareIcon = CustomSvgIcons.CloseSquare;
 
     return (
         <div className={classes.container}>
             <Fragment>
                 <ToastContainer />
                 <h1 className={classes.header}>Node Tree View</h1>
-                <div className={classes.buttonsContainer}>
-                    <Grid container justify="flex-end" alignItems="center">
+                <div className={classes.itemsContainer}>
+                <Grid container justify="flex-end" alignItems="center">
+                    <Grid item className={classes.searchInputContainer}>
+                        <TextField
+                            label="Search"
+                            variant="outlined"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className={classes.searchInput}
+                        />
+                    </Grid>
+                    <Grid container spacing={0} justify="space-between" alignItems="center">
                         <Grid item>
-                            <IconButton onClick={handleExpandToggle} className={classes.expandButton}>
-                                {expandedNodes.length > 0 ? (
-                                    <>
-                                        <ExpandLessIcon />
-                                        Collapse 
-                                    </>
-                                ) : (
-                                    <>
-                                        <ExpandMoreIcon />
-                                        Expand
-                                    </>
-                                )}
-                            </IconButton>
+                        <IconButton onClick={handleExpandToggle} className={classes.expandButton}>
+                            {expandedNodes.length > 0 ? (
+                                <>
+                                    <ExpandLessIcon />
+                                    Collapse All
+                                </>
+                            ) : (
+                                <>
+                                    <ExpandMoreIcon />
+                                    Expand All
+                                </>
+                            )}
+                        </IconButton>
                         </Grid>
                         <Grid item>
-                            <AddNodeComponent parentId={selectedNodeID} name={selectedName} update={(operationType) => handleUpdate(operationType)} />
+                            <Grid container spacing={0} justify="flex-end">
+                                <Grid item>
+                                    <AddNodeComponent parentId={selectedNodeID} name={selectedName} update={(operationType) => handleUpdate(operationType)} />
+                                </Grid>
+                                <Grid item>
+                                    <DeleteNodeComponent nodeId={selectedNodeID} name={selectedName} hasChildren={selectedNodeHasChildren} update={(operationType) => handleUpdate(operationType)} />
+                                </Grid>
+                            </Grid>
                         </Grid>
-                        <Grid item>
-                            <DeleteNodeComponent nodeId={selectedNodeID} name={selectedName} hasChildren={selectedNodeHasChildren} update={(operationType) => handleUpdate(operationType)} />
-                        </Grid>
+                    </Grid>
                         <Grid item>
                             <EditNodeComponent
                                 open={openEditDialog}
@@ -273,9 +319,9 @@ export default function CustomizedTreeView() {
                 </div>
                 <div className={classes.treeViewContainer}>
                     <TreeView
-                        defaultCollapseIcon={<MinusSquareIcon />}
-                        defaultExpandIcon={<PlusSquareIcon />}
-                        defaultEndIcon={<CloseSquareIcon />}
+                        defaultCollapseIcon={<ExpandLessIcon />}
+                        defaultExpandIcon={<ChevronRightIcon />}
+                        defaultEndIcon={<CancelIcon />}
                         expanded={expandedNodes}
                         onNodeSelect={handleNodeSelect}
                     >

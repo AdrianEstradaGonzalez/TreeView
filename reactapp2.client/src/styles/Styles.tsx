@@ -20,9 +20,10 @@ export const useCustomizedTreeViewStyles = makeStyles((theme) => ({
     header: {
         marginBottom: theme.spacing(2),
     },
-    buttonsContainer: {
+    itemsContainer: {
         display: 'flex',
         justifyContent: 'flex-end',
+        alignItems: 'center', // Alinear elementos verticalmente
         width: '100%',
         marginBottom: theme.spacing(2),
     },
@@ -32,6 +33,19 @@ export const useCustomizedTreeViewStyles = makeStyles((theme) => ({
         margin: '0 auto', // Center the TreeView horizontally
     },
     expandButton: {
-        margin: 0
+        margin: 0,
+    },
+    searchInputContainer: {
+        display: 'flex',
+        alignItems: 'center', // Alinear elementos verticalmente
+        flexGrow: 1, // Para que ocupe todo el espacio disponible
+        width: '100%',
+        maxWidth: 400, // Limitar el ancho máximo para evitar que se expanda demasiado en pantallas grandes
+        marginBottom: theme.spacing(2),
+    },
+    searchInput: {
+        flexGrow: 1, // Para que el cuadro de texto ocupe todo el espacio disponible
+        
+        marginRight: theme.spacing(1),
     },
 }));
